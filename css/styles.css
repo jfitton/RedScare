@@ -1,0 +1,63 @@
+a {
+    text-decoration: none;
+}
+#options {
+    border: black solid 5px;
+    background: goldenrod;
+}
+.links {
+    color: black;
+}
+
+.title {
+    color: black;
+    font-family: "Palatino Linotype";
+    font-size: 44px;
+}
+
+label {
+    color: black;
+}
+
+.button-holder {
+    padding-top: 25px;
+    text-align: center;
+}
+
+.submit-button {
+    width: 100px;
+    height: 50px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.find-game {
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.form-name {
+    text-align: center;
+    color: black;
+    padding-bottom: 45px;
+}
+
+.loginForm {
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-bottom: 100px;
+    padding-top: 25px;
+    border: black 5px solid;
+    background-color: goldenrod;
+}
+
+input{
+    background-color: floralwhite;
+}
+
+.logo {
+    width: 45px;
+    height: 45px;
+}

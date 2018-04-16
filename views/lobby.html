@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            // $(".find-game").click(function(){
+            //     $.get("current-User", function (data, status) {
+            //
+            //     });
+            // });
+        });
+    </script>
+    <meta charset="UTF-8">
+    <title>Red Scare</title>
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="/styles.css">
+<style>
+    body,h1 {font-family: "Raleway", sans-serif}
+    body, html {height: 100%}
+    .bgimg {
+        background-image: url('/1.jpg');
+        min-height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
+</style>
+<body>
+<script>
+    var name = "";
+    $.get("/getuser", function (data) {
+        name = data.name;
+        console.log(name);
+    });
+    function disable() {
+        console.log("clicked");
+        document.getElementById('mysub').disabled = true;
+        document.getElementById('mysub').value = 'Finding Game';
+    }
+</script>
+<div class="whole bgimg">
+    <div class="button-holder w3-display-middle">
+        <form name="findGame" action="findGame" method="get">
+        <input onclick="disable()" type="submit" value="Find Game" id="mysub" class="find-game">
+        </form>
+    </div>
+</div>
+</body>
+</html>

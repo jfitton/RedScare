@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("button").click(function(){
+                $.get("help", function (data, status) {
+
+                });
+            });
+        });
+    </script>
+
+<title>Red Scare</title>
+</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="/styles.css">
+<style>
+    body,h1 {font-family: "Raleway", sans-serif}
+    body, html {height: 100%}
+    .bgimg {
+        background-image: url('/1.jpg');
+        min-height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
+</style>
+<body>
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+    <div class="w3-display-topleft w3-padding-large w3-xlarge">
+
+    </div>
+    <div class="w3-display-topmiddle">
+        <h1 class="w3-animate-top title"><img class="logo" src="/hammer-sickle-logo-8BA54A789D-seeklogo.com.png"><strong>RED SCARE</strong><img class="logo" src="/hammer-sickle-logo-8BA54A789D-seeklogo.com.png"></h1>
+<!--        <hr class="w3-border-grey" style="margin:auto;width:40%"> -->
+        <div id="options">
+            <p class="w3-large w3-center"><a class="links" href="/login">Login</a></p>
+            <p class="w3-large w3-center"><a class="links" href="/newUser">Create Account</a></p>
+        </div>
+    </div>
+</div>
+<!-- <button>click</button> -->
+</body>
+</html>
