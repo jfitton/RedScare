@@ -35,16 +35,35 @@
         name = data.name;
         console.log(name);
     });
-    function disable() {
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function disable() {
+        $.get('/findGame', function (data) {
+            console.log(data);
+        });
+        var make;
         console.log("clicked");
         document.getElementById('mysub').disabled = true;
         document.getElementById('mysub').value = 'Finding Game';
+        while(make !== "true"){
+            $.get("/makeGame", function (data) {
+                make = data.make;
+                console.log(make);
+                if (make === 'true'){
+                }
+            });
+            await sleep(500);
+        }
+        console.log("finished " + make);
     }
 </script>
 <div class="whole bgimg">
     <div class="button-holder w3-display-middle">
-        <form name="findGame" action="findGame" method="get">
-        <input onclick="disable()" type="submit" value="Find Game" id="mysub" class="find-game">
+        <form name="find" action="findGame" method="get">
+            <input onclick="disable()" type="submit" value="Find Game" id="mysub" class="find-game">
         </form>
     </div>
 </div>
