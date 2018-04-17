@@ -1,7 +1,8 @@
 var express = require('express');
 var path = require('path');
 var userField;
-
+var searchingUsers = 0;
+var makeGame = "false";
 //var favicon = require('serve-favicon');
 //var bodyparser = require('body-parser');
 
@@ -42,8 +43,17 @@ app.get('/getuser', function (req, res) {
     res.json({name:userField})
 });
 
-app.get('/findGame', function (req, res) {
+app.get('/makeGame', function (req, res) {
+    res.json({make: makeGame});
+});
 
+app.get('/findGame', function (req, res) {
+    searchingUsers++;
+    console.log("find");
+    if(searchingUsers == 2) {
+        makeGame = "true";
+    }
+    res.json('success');
 });
 
 app.get('/create', function (req, res) {
