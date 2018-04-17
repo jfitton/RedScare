@@ -25,6 +25,10 @@ app.get('/newUser', function (req, res) {
     res.render('newUser.html');
 });
 
+app.get('/start', function (req, res) {
+    console.log('start requested');
+    res.render('game.html');
+});
 // Actions
 app.get('/loginUser', function (req, res) {
     var valid = true;
@@ -54,6 +58,15 @@ app.get('/findGame', function (req, res) {
         makeGame = "true";
     }
     res.json('success');
+});
+
+app.get('/allow', function (req, res) {
+    if(searchingUsers > 0) {
+        res.json({allow:'true'});
+        searchingUsers--;
+    }else {
+        res.json({allow:'false'});
+    }
 });
 
 app.get('/create', function (req, res) {

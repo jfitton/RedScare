@@ -45,19 +45,28 @@
             console.log(data);
         });
         var make;
+        var start;
+        start = 'false';
         console.log("clicked");
         document.getElementById('mysub').disabled = true;
         document.getElementById('mysub').value = 'Finding Game';
-        while(make !== "true"){
-            $.get("/makeGame", function (data) {
-                make = data.make;
-                console.log(make);
-                if (make === 'true'){
-                }
+        do {
+            make = 'false';
+            while (make !== "true") {
+                $.get("/makeGame", function (data) {
+                    make = data.make;
+                    console.log(make);
+                });
+                await sleep(500);
+            }
+            console.log("finished " + make);
+            $.get('allow', function (data) {
+                start = data.allow;
+                console.log('allow::' + start);
             });
             await sleep(500);
-        }
-        console.log("finished " + make);
+        } while (start !== "true");
+        window.location.href = "start"
     }
 </script>
 <div class="whole bgimg">
