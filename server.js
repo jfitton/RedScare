@@ -17,6 +17,11 @@ else
 	fileSlash = "/";
 
 
+var chat = '<p>here are some messages</p><p>wazzup???</p><p>this messkhsdfkjhgkhegrage is not a real message</p><p>enjoy these fake' +
+    ' messages</p><p>here are some messages</p><p>wazzup???</p><p>this message is not a real message</p><p>enjoy these' +
+    ' fake messages</p><p>here are some messages</p><p>wazzup???</p><p>this message is not a real message</p>' +
+    '<p>enjoy these fake messages</p>';
+
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use(express.static('images'));
@@ -42,6 +47,11 @@ app.get('/start', function (req, res) {
 });
 // Actions
 
+var players = [];
+
+app.get('/players', function (req, res) {
+    res.json({player:players});
+});
 
 app.get('/loginUser', function (req, res) {
     var valid = true;
@@ -62,9 +72,11 @@ app.get('/getuser', function (req, res) {
 
 app.get('/makeGame', function (req, res) {
     res.json({make: makeGame});
+    console.log(searchingUsers);
 });
 
-app.get('/findGame', function (req, res) {
+app.get('/findGameFirefox', function (req, res) {
+    console.log(searchingUsers);
     if(searchingUsers == 1) {
         makeGame = "true";
     } else if (searchingUsers == 0){
@@ -74,11 +86,30 @@ app.get('/findGame', function (req, res) {
     console.log("find");
 });
 
+app.get('/findGameChrome', function (req, res) {
+    console.log(searchingUsers);
+    if(searchingUsers == 1) {
+        makeGame = "true";
+    } else if (searchingUsers == 0){
+        makeGame = 'false'
+    }
+    searchingUsers++;
+    console.log("find");
+    res.end('wtf') //json({test:'plz work'});
+});
+
 app.get('/allow', function (req, res) {
     if(searchingUsers > 0) {
+        console.log(req.query.name)
+        players.push(req.query.name)
+        console.log(searchingUsers);
         res.json({allow:'true'});
+
+        console.log(players)
+
         searchingUsers--;
     }else {
+        console.log(searchingUsers);
         res.json({allow:'false'});
     }
 });
@@ -89,6 +120,10 @@ app.get('/create', function (req, res) {
     var passField = req.query.passField;
     console.log(passField);
 });
+
+app.get('/getChat', function (req, res) {
+    res.json({messages:chat})
+})
 
 var server = app.listen(8081, function () {
     var host = server.address().address;

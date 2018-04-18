@@ -44,6 +44,23 @@ label {
     padding-bottom: 45px;
 }
 
+.chatBox {
+    border: 5px solid black;
+    margin-right: 50px;
+    background-color: brown;
+    height: 25%;
+    width: 35%;
+    overflow: auto;
+}
+
+.chatter {
+    padding-left: 20px;
+    padding-right: 15px;
+    font-weight: bold;
+    font-family: "Palatino Linotype", serif;
+    overflow: auto;
+}
+
 .loginForm {
     padding-left: 25px;
     padding-right: 25px;

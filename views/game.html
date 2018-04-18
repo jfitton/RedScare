@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <meta charset="UTF-8">
     <title>Red Scare</title>
 </head>
@@ -19,16 +20,49 @@
     }
 </style>
 <script>
-    document
+
+    window.addEventListener("load", getChat, false);
+
+    window.addEventListener("load", addVoters, false);
+    var players = [];
+    async function addVoters() {
+        while (players.length < 2) {
+            $.get("/players", function (data) {
+                players = data.player;
+            });
+            await sleep(250 )
+        }
+        await sleep(500);
+        players.forEach(addPlayer);
+    };
+
+    function addPlayer(item, index) {
+        $('.voteBlock').append('<button>' + item +'</button>');
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    var chatMessages;
+    async function getChat() {
+        while (true) {
+            $.get("/getChat", function (data) {
+                chatMessages = data.messages;
+            });
+            $('.chatter').html(chatMessages);
+            await sleep(500);
+        }
+    }
 </script>
 <body>
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-    <div class="w3-display-left voteBlock" onload=players.forEach(listPlayers)>
+    <div class="w3-display-left voteBlock" onload=players.forEach(listPlayers) onload="getChat()">
 
     </div>
     <div class="chatBox w3-display-right">
-        <div class="w3-middle">
-
+        <div class="w3-middle chatter">
+            <p id="chatText"></p>
         </div>
     </div>
 </div>
