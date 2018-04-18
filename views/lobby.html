@@ -69,7 +69,7 @@
                 await sleep(1000);
             }
             console.log("finished " + make);
-            $.get('allow', function (data) {
+            $.get('allow', {name:name}, function (data) {
                 start = data.allow;
                 console.log('allow::' + start);
             });

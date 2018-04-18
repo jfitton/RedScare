@@ -21,6 +21,25 @@
 </style>
 <script>
 
+    window.addEventListener("load", getChat, false);
+
+    window.addEventListener("load", addVoters, false);
+    var players = [];
+    async function addVoters() {
+        while (players.length < 2) {
+            $.get("/players", function (data) {
+                players = data.player;
+            });
+            await sleep(250 )
+        }
+        await sleep(500);
+        players.forEach(addPlayer);
+    };
+
+    function addPlayer(item, index) {
+        $('.voteBlock').append('<button>' + item +'</button>');
+    }
+
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
@@ -31,7 +50,7 @@
             $.get("/getChat", function (data) {
                 chatMessages = data.messages;
             });
-            $('#chatText').text(chatMessages);
+            $('.chatter').html(chatMessages);
             await sleep(500);
         }
     }
@@ -42,7 +61,7 @@
 
     </div>
     <div class="chatBox w3-display-right">
-        <div class="w3-middle">
+        <div class="w3-middle chatter">
             <p id="chatText"></p>
         </div>
     </div>
