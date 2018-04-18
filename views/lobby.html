@@ -40,10 +40,19 @@
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    var isChrome = !!window.chrome && !!window.chrome.webstore;
+    var isFirefox = typeof InstallTrigger !== 'undefined';
+
+
     async function disable() {
-        $.get('/findGame', function (data) {
-            console.log(data);
-        });
+        if(isChrome) {
+            $.get('/findGameChrome', function (data) {
+                var test = data.test;
+                //console.log(data);
+            });
+        } else if (isFirefox === 'true'){
+            $.get('/findGameFirefox');
+        }
         var make;
         var start;
         start = 'false';
@@ -57,21 +66,21 @@
                     make = data.make;
                     console.log(make);
                 });
-                await sleep(500);
+                await sleep(1000);
             }
             console.log("finished " + make);
             $.get('allow', function (data) {
                 start = data.allow;
                 console.log('allow::' + start);
             });
-            await sleep(500);
+            await sleep(1000);
         } while (start !== "true");
         window.location.href = "start"
     }
 </script>
 <div class="whole bgimg">
     <div class="button-holder w3-display-middle">
-        <form name="find" action="findGame" method="get">
+        <form name="find" action="findGameFirefox" method="get">
             <input onclick="disable()" type="submit" value="Find Game" id="mysub" class="find-game">
         </form>
     </div>

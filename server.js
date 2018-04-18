@@ -17,6 +17,8 @@ else
 	fileSlash = "/";
 
 
+var chat = 'here are some messages\nthis message is not a real message\nenjoy these fake messages';
+
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use(express.static('images'));
@@ -62,9 +64,11 @@ app.get('/getuser', function (req, res) {
 
 app.get('/makeGame', function (req, res) {
     res.json({make: makeGame});
+    console.log(searchingUsers);
 });
 
-app.get('/findGame', function (req, res) {
+app.get('/findGameFirefox', function (req, res) {
+    console.log(searchingUsers);
     if(searchingUsers == 1) {
         makeGame = "true";
     } else if (searchingUsers == 0){
@@ -74,11 +78,25 @@ app.get('/findGame', function (req, res) {
     console.log("find");
 });
 
+app.get('/findGameChrome', function (req, res) {
+    console.log(searchingUsers);
+    if(searchingUsers == 1) {
+        makeGame = "true";
+    } else if (searchingUsers == 0){
+        makeGame = 'false'
+    }
+    searchingUsers++;
+    console.log("find");
+    res.end('wtf') //json({test:'plz work'});
+});
+
 app.get('/allow', function (req, res) {
     if(searchingUsers > 0) {
+        console.log(searchingUsers);
         res.json({allow:'true'});
         searchingUsers--;
     }else {
+        console.log(searchingUsers);
         res.json({allow:'false'});
     }
 });
@@ -89,6 +107,10 @@ app.get('/create', function (req, res) {
     var passField = req.query.passField;
     console.log(passField);
 });
+
+app.get('/getChat', function (req, res) {
+    res.json({messages:chat})
+})
 
 var server = app.listen(8081, function () {
     var host = server.address().address;
