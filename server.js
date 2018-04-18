@@ -72,8 +72,6 @@ app.get('/findGame', function (req, res) {
     }
     searchingUsers++;
     console.log("find");
-
-    res.json('success');
 });
 
 app.get('/allow', function (req, res) {
