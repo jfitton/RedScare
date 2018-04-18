@@ -19,53 +19,7 @@
     }
 </style>
 <script>
-
-    // trying to get chat to autoscroll down
-    // current attempt is to use a timer
-    // future might be onUpdate of text in box
-
-    var scrolled = false;
-    function updateScroll() {
-        if(!scrolled) {
-            var element = document.getElementsByClassName("chatbox");
-            element.scrollTop = element.scrollHeight;
-        }
-    }
-
-    $(document).onload(scrolling());
-
-    $(".chatBox").on('scroll', function () {
-        scrolled = true;
-    })
-
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    async function scrolling() {
-        while (true) {
-            await sleep(500);
-            updateScroll();
-        }
-    }
-
-    //setInterval(updateScroll(), 500);
-
-    var players = ['player1','Hitler','Osama','Trump','Obama','Karl Marx','Rudolph'];
-    window.onload = function () {
-        players.forEach(listPlayers);
-    };
-    function listPlayers(item) {
-
-        var tag = document.createElement("p");
-        tag.innerText = players[item];
-        var vote = document.createElement("button");
-        vote.value = "Vote";
-
-        var parent = document.getElementsByClassName("voteBlock");
-        parent.appendChild(tag);
-        parent.appendChild(vote);
-    }
+    document
 </script>
 <body>
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
@@ -74,9 +28,7 @@
     </div>
     <div class="chatBox w3-display-right">
         <div class="w3-middle">
-            <p class="chat">1 Hello, I just want to see how this text box interacts with a large amount of text so im going to make an immense statement and see how it works. hopefully it will automatically add new lines and wrap around.</p>
-            <p class="chat">2 Hello, I just want to see how this text box interacts with a large amount of text so im going to make an immense statement and see how it works. hopefully it will automatically add new lines and wrap around.</p>
-            <p class="chat">3 Hello, I just want to see how this text box interacts with a large amount of text so im going to make an immense statement and see how it works. hopefully it will automatically add new lines and wrap around.</p>
+
         </div>
     </div>
 </div>

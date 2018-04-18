@@ -65,12 +65,13 @@ app.get('/makeGame', function (req, res) {
 });
 
 app.get('/findGame', function (req, res) {
+    if(searchingUsers == 1) {
+        makeGame = "true";
+    } else if (searchingUsers == 0){
+        makeGame = 'false'
+    }
     searchingUsers++;
     console.log("find");
-    if(searchingUsers == 2) {
-        makeGame = "true";
-    }
-    res.json('success');
 });
 
 app.get('/allow', function (req, res) {
