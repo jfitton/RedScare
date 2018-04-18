@@ -9,12 +9,19 @@ var favicon = require('serve-favicon');
 
 var app = express();
 
+        // system
+var fileSlash;
+if(process.platform === "win32")
+	fileSlash = "\\";
+else
+	fileSlash = "/";
+
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use(express.static('images'));
 app.use(express.static('css'));
-app.use(favicon(__dirname + '\\images\\hammer-sickle-logo-8BA54A789D-seeklogo.com.png'))
+app.use(favicon(__dirname + fileSlash + 'images' + fileSlash + 'hammer-sickle-logo-8BA54A789D-seeklogo.com.png'))
 
 // Page requests
 app.get('/', function (req, res) {
