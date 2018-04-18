@@ -3,14 +3,18 @@ var path = require('path');
 var userField;
 var searchingUsers = 0;
 var makeGame = "false";
+var favicon = require('serve-favicon');
 //var favicon = require('serve-favicon');
 //var bodyparser = require('body-parser');
 
 var app = express();
+
+
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.use(express.static('images'));
 app.use(express.static('css'));
+app.use(favicon(__dirname + '\\images\\hammer-sickle-logo-8BA54A789D-seeklogo.com.png'))
 
 // Page requests
 app.get('/', function (req, res) {
@@ -30,6 +34,8 @@ app.get('/start', function (req, res) {
     res.render('game.html');
 });
 // Actions
+
+
 app.get('/loginUser', function (req, res) {
     var valid = true;
     userField = req.query.userField;
