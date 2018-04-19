@@ -7,17 +7,55 @@ var favicon = require('serve-favicon');
 //var favicon = require('serve-favicon');
 //var bodyparser = require('body-parser');
 
+
+// load list of users from users.db
+//TODO: when writing users to the file, do not include admin
+var users = [{username:"ADMIN", password:"yes"}]; 
+
+var fs = require("fs");
+console.log('reading users from file...');
+var lineReader = require('readline').createInterface({
+  input: require('fs').createReadStream('file.db')
+});
+
+lineReader.on('line', function (line) {
+    console.log('Line from file:', line);
+    //split the line into a array with two elements
+    var user_string = line.split(":");
+    var user = {username:user_string[0], password:user_string[1]};
+    users.push(user);
+    
+});
+
+
 var app = express();
 var gameid = 0;
 var games = [];
 
 
-        // system
+
+//helper functions
+function containsObject(obj, list) { //used for verifying logins
+    var i;
+    for (i = 0; i < list.length; i++) {
+        //console.log(list[i]);
+        if (JSON.stringify(list[i]) === JSON.stringify(obj)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//determining OS for file operations
 var fileSlash;
 if(process.platform === "win32")
 	fileSlash = "\\";
 else
 	fileSlash = "/";
+
+
+
 
 
 var chat = '<p>here are some messages</p><p>wazzup???</p><p>this messkhsdfkjhgkhegrage is not a real message</p><p>enjoy these fake' +
@@ -57,14 +95,20 @@ app.get('/players', function (req, res) {
 });
 
 app.get('/loginUser', function (req, res) {
+
+    //verfiy login 
     var valid = true;
     userField = req.query.userField;
     //console.log(userField);
     var passField = req.query.passField;
     //console.log(passField);
+    var combo = {username:userField, password:passField};
+    valid = containsObject(combo, users); 
     if(valid) {
+        console.log("login succeeded");
         res.render('lobby.html',{name:userField});
     } else {
+        console.log("login failed");
         res.render('login.html');
     }
 });
@@ -135,6 +179,15 @@ app.get('/create', function (req, res) {
     console.log(userField);
     var passField = req.query.passField;
     console.log(passField);
+    //adding to users
+    var combo = {username:userField, password:passField};
+    users.push(combo); 
+    //writing to file
+    fs.appendFile('file.db', userField + ":" + passField + "\n", function (err) {
+        if (err) throw err;
+        console.log('User added');
+    }); 
+    res.render('login.html');
 });
 
 app.get('/getChat', function (req, res) {
