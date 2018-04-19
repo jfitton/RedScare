@@ -8,6 +8,9 @@ var favicon = require('serve-favicon');
 //var bodyparser = require('body-parser');
 
 var app = express();
+var gameid = 0;
+var games = [];
+
 
         // system
 var fileSlash;
@@ -50,7 +53,7 @@ app.get('/start', function (req, res) {
 var players = [];
 
 app.get('/players', function (req, res) {
-    res.json({player:players});
+    res.json({player:curGame.players});
 });
 
 app.get('/loginUser', function (req, res) {
@@ -75,9 +78,16 @@ app.get('/makeGame', function (req, res) {
     console.log(searchingUsers);
 });
 
+var curGame = {id:undefined, players:[], votes:[0,0,0,0,0], cia:undefined};
+
 app.get('/findGameFirefox', function (req, res) {
     console.log(searchingUsers);
     if(searchingUsers == 1) {
+        if (curGame.id === undefined) {
+            curGame.id = gameid;
+            curGame.cia = Math.floor(Math.random()*5);
+            gameid++;
+        }
         makeGame = "true";
     } else if (searchingUsers == 0){
         makeGame = 'false'
@@ -89,19 +99,25 @@ app.get('/findGameFirefox', function (req, res) {
 app.get('/findGameChrome', function (req, res) {
     console.log(searchingUsers);
     if(searchingUsers == 1) {
+        if (curGame.id === undefined) {
+            curGame.id = gameid;
+            gameid++;
+        }
         makeGame = "true";
     } else if (searchingUsers == 0){
+        curGame.id = undefined;
+        curGame.players = [];
         makeGame = 'false'
     }
     searchingUsers++;
     console.log("find");
-    res.end('wtf') //json({test:'plz work'});
+    res.end('ok');
 });
 
 app.get('/allow', function (req, res) {
     if(searchingUsers > 0) {
         console.log(req.query.name)
-        players.push(req.query.name)
+        curGame.players.push(req.query.name)
         console.log(searchingUsers);
         res.json({allow:'true'});
 

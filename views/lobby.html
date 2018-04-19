@@ -66,14 +66,14 @@
                     make = data.make;
                     console.log(make);
                 });
-                await sleep(1000);
+                await sleep(500);
             }
             console.log("finished " + make);
             $.get('allow', {name:name}, function (data) {
                 start = data.allow;
                 console.log('allow::' + start);
             });
-            await sleep(1000);
+            await sleep(500);
         } while (start !== "true");
         window.location.href = "start"
     }

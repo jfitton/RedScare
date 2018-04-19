@@ -25,10 +25,12 @@
 
     window.addEventListener("load", addVoters, false);
     var players = [];
+    var role;
     async function addVoters() {
         while (players.length < 2) {
             $.get("/players", function (data) {
                 players = data.player;
+                role = data.role;
             });
             await sleep(250 )
         }
@@ -58,7 +60,7 @@
 <body>
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
     <div class="w3-display-left voteBlock" onload=players.forEach(listPlayers) onload="getChat()">
-
+        <h1 id="role"></h1>
     </div>
     <div class="chatBox w3-display-right">
         <div class="w3-middle chatter">
