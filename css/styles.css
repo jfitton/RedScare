@@ -44,18 +44,65 @@ label {
     padding-bottom: 45px;
 }
 
+.textBox {
+    border: black solid 5px;
+    width: 85%;
+    padding-top: 0px;
+}
+
+#messagingArea {
+    display: block;
+    width: 85%;
+}
+
+.sendChat {
+    margin-top: 0px;
+    height: 20%;
+}
+
+.editable {
+    border: 1px inset #aaa;
+    height: 25%;
+    width: 50%;
+    margin-left: 25%;
+    padding: 2px;
+    cursor: text;
+    background-color: floralwhite;
+    align-self: center;
+    font-size: 28px;
+}
+
+.tempHolder {
+    width: 20%;
+    height: 20%;
+}
+
 .chatBox {
     border: 5px solid black;
     margin-right: 50px;
     background-color: brown;
     height: 25%;
-    width: 35%;
+    width: 85%;
     overflow: auto;
+}
+
+h1 {
+    margin: 0px;
+}
+
+.readyButton {
+    align-self: center;
+    margin-left: 25%;
+    margin-top: 5px;
+    padding: 2px;
+    height: 25%;
+    width: 50%;
 }
 
 .chatter {
     padding-left: 20px;
     padding-right: 15px;
+    margin-bottom: 5px;
     font-weight: bold;
     font-family: "Palatino Linotype", serif;
     overflow: auto;

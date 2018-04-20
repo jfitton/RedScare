@@ -21,16 +21,34 @@
 </style>
 <script>
 
+    window.addEventListener("load", getInfo, false);
+
+
+    var name = "";
+    async function getInfo() {
+        $.get("/getuser", function (data) {
+            name = data.name;
+            console.log(name);
+        });
+        await sleep(250);
+        var gameID;
+        var role;
+        $.get('/gameInfo', {name: name}, function (data) {
+            console.log(name);
+            gameID = data.id;
+            role = data.role;
+            console.log(gameID);
+            console.log(role);
+        })
+    }
     window.addEventListener("load", getChat, false);
 
     window.addEventListener("load", addVoters, false);
     var players = [];
-    var role;
     async function addVoters() {
         while (players.length < 2) {
             $.get("/players", function (data) {
                 players = data.player;
-                role = data.role;
             });
             await sleep(250 )
         }
@@ -59,7 +77,7 @@
 </script>
 <body>
 <div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-    <div class="w3-display-left voteBlock" onload=players.forEach(listPlayers) onload="getChat()">
+    <div class="w3-display-left voteBlock">
         <h1 id="role"></h1>
     </div>
     <div class="chatBox w3-display-right">

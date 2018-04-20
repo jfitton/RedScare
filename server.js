@@ -58,10 +58,7 @@ else
 
 
 
-var chat = '<p>here are some messages</p><p>wazzup???</p><p>this messkhsdfkjhgkhegrage is not a real message</p><p>enjoy these fake' +
-    ' messages</p><p>here are some messages</p><p>wazzup???</p><p>this message is not a real message</p><p>enjoy these' +
-    ' fake messages</p><p>here are some messages</p><p>wazzup???</p><p>this message is not a real message</p>' +
-    '<p>enjoy these fake messages</p>';
+var chat = '<p>Weclome to the chat!</p>';
 
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
@@ -122,6 +119,18 @@ app.get('/makeGame', function (req, res) {
     console.log(searchingUsers);
 });
 
+app.get('/gameInfo', function (req, res) {
+    console.log('info requested');
+    var thisUser = req.query.name;
+    var role;
+    console.log('info requested by: ' + thisUser);
+    console.log(curGame.players[curGame.cia]);
+    //res.json({role:'asdf', id:2});
+    if(curGame.players[curGame.cia] == thisUser) role = 'CIA';
+    else role = 'Communist';
+    res.json({role:role, id:curGame.id})
+})
+
 var curGame = {id:undefined, players:[], votes:[0,0,0,0,0], cia:undefined};
 
 app.get('/findGameFirefox', function (req, res) {
@@ -129,7 +138,9 @@ app.get('/findGameFirefox', function (req, res) {
     if(searchingUsers == 1) {
         if (curGame.id === undefined) {
             curGame.id = gameid;
-            curGame.cia = Math.floor(Math.random()*5);
+            console.log('gameID::' + gameid);
+            curGame.cia = Math.floor(Math.random()*2);
+            console.log('CIA::' + curGame.cia);
             gameid++;
         }
         makeGame = "true";
@@ -145,6 +156,9 @@ app.get('/findGameChrome', function (req, res) {
     if(searchingUsers == 1) {
         if (curGame.id === undefined) {
             curGame.id = gameid;
+            console.log('gameID::' + gameid);
+            curGame.cia = Math.floor(Math.random()*2);
+            console.log('CIA::' + curGame.cia);
             gameid++;
         }
         makeGame = "true";
@@ -154,18 +168,18 @@ app.get('/findGameChrome', function (req, res) {
         makeGame = 'false'
     }
     searchingUsers++;
-    console.log("find");
+    console.log("find; no extra data");
     res.end('ok');
 });
 
 app.get('/allow', function (req, res) {
     if(searchingUsers > 0) {
-        console.log(req.query.name)
+        console.log('allow: ' + req.query.name)
+        userField = req.query.name;
         curGame.players.push(req.query.name)
-        console.log(searchingUsers);
+        //console.log(searchingUsers);
         res.json({allow:'true'});
 
-        console.log(players)
 
         searchingUsers--;
     }else {
@@ -201,4 +215,156 @@ var server = app.listen(8081, function () {
 
 app.get('/help', function (req, res) {
    res.send("Heres the help");
+});
+
+
+
+
+
+var readyUsers = [];
+
+app.get('/game2', function (req, res) {
+    res.render('gameTest.html');
+});
+
+var gameStartedHTML = '<div class="w3-display-left voteBlock">\n' +
+    '    </div>\n' +
+    '<div class="mainChat w3-display-right">' +
+    '    <div class="chatBox ">\n' +
+    '        <div class="w3-middle chatter">\n' +
+    '            <p id="chatText"></p>\n' +
+    '        </div>' +
+    '    </div>' +
+    '    <div>' +
+    '       <textarea class="textBox" id="messagingArea"></textarea>' +
+    '       <button class="textBox sendChat" id="sendButton">Send</button>' +
+    '       ' +
+    '    </div>' +
+    '</div>';
+
+app.get('/gameStart', function (req, res) {
+    console.log("requested by " + req.query.name);
+    readyUsers.push(req.query.name);
+    res.json({html:gameStartedHTML});
+});
+
+var thisGame = {id:undefined, players:[], votes:[0,0], cia:undefined, round:undefined};
+var gamId = 0;
+var runningGames = [];
+
+function getGame(id) {
+    var game;
+
+    var i = 0;
+    for(game in runningGames){
+        if(game.id == id){
+            // do stuff with data
+        }
+    }
+}
+
+function newGame(){
+    thisGame = {id:undefined, players:[], votes:[0,0,0,0,0], cia:undefined, round:undefined, voted:[]};
+}
+
+
+// If multiple players have same name, game will not run correctly
+
+app.get('/ready', function (req, res) {
+    // console.log('someone ready checked');
+    // console.log('array length: ' + readyUsers.length)
+    // console.log('user[0]: ' + readyUsers[0]);
+    // console.log('this games player count: ' + thisGame.players.length);
+
+    if(readyUsers.length >= 2 && readyUsers[0] == req.query.name && thisGame.players.length == 0){
+        newGame();
+
+        thisGame.id = gamId;
+        gamId++;
+        thisGame.round = 0;
+        thisGame.players.push(readyUsers.shift());
+
+        var i;
+        for(i = 0; i < 1; i++) {
+            thisGame.players.push(readyUsers[i]);
+        }
+
+        // console.log('The next player is: ' + readyUsers[0]);
+        thisGame.cia = Math.floor(Math.random()*2);
+        // console.log(thisGame.cia);
+        res.json({success:'success', id:thisGame.id, players:thisGame.players, votes:thisGame.votes, cia:thisGame.cia});
+    } else if (readyUsers[0] == req.query.name && thisGame.players.length == 2 && thisGame.players.length > 0) {
+        // console.log("should send to: " + req.query.name);
+        readyUsers.shift();
+        res.json({success:'success', id:thisGame.id, players:thisGame.players, votes:thisGame.votes, cia:thisGame.cia, round:thisGame.round});
+        runningGames.push(thisGame);
+        console.log('game pushed: ' + thisGame.id + runningGames.length);
+    }
+    else {
+        res.json({success:'fail'});
+    }
+});
+
+var gameById = "";
+
+app.get('/vote', function (req, res) {
+    var theirID = req.query.id;
+    var theirVote = req.query.vote;
+    for (var i = 0; i < runningGames.length; i++){
+        console.log(runningGames[i].id);
+        console.log(theirID);
+        if(runningGames[i].id == theirID){
+            console.log('found it')
+            gameById = runningGames[i];
+        }
+    }
+    var round = gameById.round;
+    if(round%2 == 0){
+        gameById.players.splice(theirVote, 1);
+        gameById.round++;
+    }else {
+        console.log(gameById);
+        //gameById.voted.push(req.query.screenName);
+        gameById.votes[theirVote]++;
+        if(gameById.voted == gameById.players) {
+            for(var i in gameById.votes){
+                if((10*i)/players.length > 5){
+                    gameById.players.splice(i, 1);
+                }
+            }
+            gameById.votes = []
+            for(p in gameById.players){
+                gameById.votes.push(0);
+            }
+            voted = [];
+        }
+    }
+    console.log(gameById)
+});
+
+app.get('/round', function (req, res) {
+    var idNum = req.query.gameID;
+    for (var i = 0; i < runningGames.length; i++){
+        if(runningGames[i].id == idNum){
+            gameById = runningGames[i];
+            break;
+        }
+    }
+    if(gameById.round%2 == 1) {
+        res.json({
+            success: 'success',
+            id: gameById.id,
+            players: gameById.players,
+            votes: gameById.votes,
+            cia: gameById.cia,
+            round: gameById.round
+        });
+    }
+    else {
+        res.json({success:'fail'});
+    }
+});
+
+app.get('/sendMessage', function (req, res) {
+    chat += '<p>' + req.query.user + ': ' + req.query.message + '</p>'
 });

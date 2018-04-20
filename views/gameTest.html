@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Red Scare</title>
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="/styles.css">
+<style>
+    body,h1 {font-family: "Raleway", sans-serif}
+    body, html {height: 100%}
+    .bgimg {
+        background-image: url('/1.jpg');
+        min-height: 100%;
+        background-position: center;
+        background-size: cover;
+    }
+</style>
+<script>
+    // variables
+    var votedFor = "";
+    var voted;
+</script>
+<script>
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    window.addEventListener("load", getChat, false);
+
+    var screenName;
+    var players;
+    var gameID;
+    var cia;
+    var votes;
+
+
+    function disableItem(item, index) {
+        item.disabled('disabled')
+    }
+
+    var hasVoted = false;
+
+    async function vote(player) {
+        if(!hasVoted) {
+            hasVoted = true;
+            console.log(player);
+            votedFor = player;
+            voted = '<div class="w3-display-left whoSelected">\n' +
+                '<p>You have voted to execute: <strong>' + votedFor + '</strong></p>' +
+                '</div>\n';
+            await sleep(500);
+            console.log('voted for: ' + votedFor);
+            $('.voteBlock').remove();
+            $('#main').append(voted);
+
+            var voteNum = players.indexOf(player);
+
+            $.get('/vote', {screenName: screenName, id: gameID, vote: voteNum}, function (data) {
+
+            });
+        }
+    }
+    
+    function addPlayer(item, index) {
+        if (item !== screenName) {
+            $('.voteBlock').append('<button class="voteSelect" id="' + item + '">' + item + '</button>');
+            var elem = document.getElementById(item);
+            elem.addEventListener('click', function () {
+                vote(item);
+            });
+        }
+    }
+
+    function addVoters() {
+        if(typeof players !== 'undefined')
+            players.forEach(addPlayer);
+    };
+
+    var html = "";
+    async function readyUp() {
+        screenName = document.getElementById('edit').value;
+        console.log(screenName);
+        $.get("/gameStart", {name:screenName}, function (data) {
+            html = data.html;
+        });
+        document.getElementById('screenName').textContent = 'Your Screen Name: ' + screenName;
+        await sleep(150);
+        $('.tempHolder').remove();
+        var loop = true;
+        while (loop) {
+            console.log('looping');
+            $.get('/ready', {name:screenName}, function (data) {
+                if(data.success == 'success'){
+                    loop = false;
+                    players = data.players;
+                    gameID = data.id;
+                    cia = (players[data.cia] == screenName);
+                    votes=data.votes;
+                    $('#main').append(html);
+                    var elem = document.getElementById('sendButton');
+                    console.log('sender added');
+                    elem.addEventListener('click', sendMessage);
+                }
+            });
+            await sleep(500);
+        }
+
+        gameLoop();
+//        addVoters();
+
+        console.log(players);
+        console.log(gameID);
+        console.log(cia);
+        console.log(votes);
+    }
+
+
+    var running = false;
+
+    function gameLoop() {
+        do {
+            setCIAPage();
+            // wait for cia victim chosen response
+
+            // voting stage
+
+            // waiting for voting stage
+
+            //round info page
+
+            //restart loop if necessary
+        } while(running)
+    }
+
+
+
+    var waitingText = '<div class="w3-display-left" id="awaiting">\n' +
+        '<p>Waiting for CIA to choose target.</p>' +
+        '</div>';
+
+    async function waitForCIA(agent) {
+        if(!agent) {
+            $('#main').append(waitingText);
+        }
+        var loop = true;
+        while(loop){
+            $.get('round', {gameID:gameID}, function (data) {
+                if(data.success == 'success'){
+                    loop = false;
+                    players = data.players;
+                    gameID = data.id;
+                    cia = (players[data.cia] == screenName);
+                    votes=data.votes;
+                }
+            });
+            await sleep(250);
+        }
+
+        if(!agent) {
+            document.getElementById("awaiting").remove();
+        } else {
+            $('.whoSelected').remove();
+        }
+
+        var dead = true;
+        for (let i = 0; i < players.length; i++) {
+            if(players[i] == screenName) dead = false;
+        }
+        if(dead){
+            killed();
+        }else {
+            addVoters();
+        }
+    }
+
+    function setCIAPage() {
+        if(cia) {
+            addVoters();
+            waitForCIA(true);
+        } else {
+            waitForCIA(false);
+        }
+    }
+
+    var killedText = '<div class="w3-display-middle">' +
+            '<h1>The CIA has assassinated you.</h1>' +
+        '</div>';
+
+    function killed() {
+        console.log(killedText)
+        $('.voteBlock').remove();
+        $('.mainChat').remove();
+        $('#main').html(killedText);
+    }
+
+
+    var chatMessages;
+    async function getChat() {
+        while (true) {
+            $.get("/getChat", function (data) {
+                chatMessages = data.messages;
+            });
+            $('.chatter').html(chatMessages);
+            await sleep(500);
+        }
+    }
+
+    function sendMessage(){
+        console.log('should be sending');
+        var message = $('#messagingArea').val();
+        $('#messagingArea').val("");
+        $.get('sendMessage', {user:screenName, message:message});
+    }
+</script>
+<body>
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white" id="main">
+    <h1 id="screenName"></h1>
+    <div class="w3-display-middle tempHolder">
+        <textarea placeholder="Screen Name" class="editable" id="edit"></textarea>
+        <button class="readyButton" onclick="readyUp()" id="readier">Ready</button>
+    </div>
+</div>
+</body>
+</html>
