@@ -205,7 +205,16 @@ app.get('/create', function (req, res) {
 });
 
 app.get('/getChat', function (req, res) {
-    res.json({messages:chat})
+
+    var idNum = req.query.id;
+    for (var i = 0; i < runningGames.length; i++){
+        if(runningGames[i].id == idNum){
+            gameById = runningGames[i];
+            break;
+        }
+    }
+    // console.log(gameById.chat)
+    res.json({messages:gameById.chat})
 })
 
 var server = app.listen(8081, function () {
@@ -265,7 +274,7 @@ function getGame(id) {
 }
 
 function newGame(){
-    thisGame = {id:undefined, players:[], votes:[0,0,0,0,0], cia:undefined, round:undefined, voted:[]};
+    thisGame = {id:undefined, players:[], votes:[0,0,0,0,0], cia:undefined, round:undefined, voted:0, chat:'<p>Weclome to the chat!</p>'};
 }
 
 
@@ -324,14 +333,16 @@ app.get('/vote', function (req, res) {
     var round = gameById.round;
     if(round%2 == 0){
         gameById.players.splice(theirVote, 1);
+        gameById.votes.shift();
         gameById.round++;
     }else {
         console.log(gameById);
-        //gameById.voted.push(req.query.screenName);
+        gameById.voted++;
         gameById.votes[theirVote]++;
-        if(gameById.voted == gameById.players) {
-            for(var i in gameById.votes){
-                if((10*i)/players.length > 5){
+        if(gameById.voted == gameById.players.length) {
+            console.log('everyone has voted')
+            for(let i = 0; i < gameById.votes.length; i++){
+                if((10*gameById.votes[i])/players.length > 5){
                     gameById.players.splice(i, 1);
                 }
             }
@@ -342,7 +353,9 @@ app.get('/vote', function (req, res) {
             voted = [];
         }
     }
-    console.log(gameById)
+    console.log('final: ');
+    console.log(gameById);
+
 });
 
 app.get('/round', function (req, res) {
@@ -369,5 +382,16 @@ app.get('/round', function (req, res) {
 });
 
 app.get('/sendMessage', function (req, res) {
-    chat += '<p>' + req.query.user + ': ' + req.query.message + '</p>'
+    console.log('message recieved');
+    var idNum = req.query.id;
+    for (var i = 0; i < runningGames.length; i++){
+        if(runningGames[i].id == idNum){
+            gameById = runningGames[i];
+            break;
+        }
+    }
+
+    gameById.chat += '<p>' + req.query.user + ': ' + req.query.message + '</p>'
+    res.json({success:'success'});
+    console.log(gameById.chat)
 });

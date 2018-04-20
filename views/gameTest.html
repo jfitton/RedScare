@@ -210,12 +210,15 @@
 
 
     var chatMessages;
-    async function getChat() {
+    async function getChat(){
         while (true) {
-            $.get("/getChat", function (data) {
-                chatMessages = data.messages;
-            });
-            $('.chatter').html(chatMessages);
+            if (typeof gameID !== 'undefined') {
+
+                $.get("/getChat", {id: gameID}, function (data) {
+                    chatMessages = data.messages;
+                });
+                $('.chatter').html(chatMessages);
+            }
             await sleep(500);
         }
     }
@@ -224,7 +227,9 @@
         console.log('should be sending');
         var message = $('#messagingArea').val();
         $('#messagingArea').val("");
-        $.get('sendMessage', {user:screenName, message:message});
+        $.get('sendMessage', {id:gameID, user:screenName, message:message}, function (data) {
+            console.log(data.success);
+        });
     }
 </script>
 <body>
