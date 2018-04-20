@@ -44,6 +44,7 @@
     }
 
     var hasVoted = false;
+    var voteblockhtml = '<div class="w3-display-left voteBlock"></div>';
 
     async function vote(player) {
         if(!hasVoted) {
@@ -68,11 +69,14 @@
     
     function addPlayer(item, index) {
         if (item !== screenName) {
+            console.log(item);
             $('.voteBlock').append('<button class="voteSelect" id="' + item + '">' + item + '</button>');
             var elem = document.getElementById(item);
-            elem.addEventListener('click', function () {
-                vote(item);
-            });
+            if(elem) {
+                elem.addEventListener('click', function () {
+                    vote(item);
+                });
+            }
         }
     }
 
@@ -166,7 +170,10 @@
         } else {
             $('.whoSelected').remove();
         }
-
+        if(agent) {
+            $('#main').append(voteblockhtml);
+        }
+            
         var dead = true;
         for (let i = 0; i < players.length; i++) {
             if(players[i] == screenName) dead = false;
@@ -174,7 +181,7 @@
         if(dead){
             killed();
         }else {
-            console.log('adding voters')
+            console.log(players);
             addVoters();
         }
     }

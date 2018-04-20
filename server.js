@@ -227,6 +227,7 @@ app.get('/game2', function (req, res) {
     res.render('gameTest.html');
 });
 
+
 var gameStartedHTML = '<div class="w3-display-left voteBlock">\n' +
     '    </div>\n' +
     '<div class="mainChat w3-display-right">' +
