@@ -47,6 +47,7 @@
     var voteblockhtml = '<div class="w3-display-left voteBlock"></div>';
 
     async function vote(player) {
+        console.log('voting')
         if(!hasVoted) {
             hasVoted = true;
             console.log(player);
@@ -81,6 +82,7 @@
     }
 
     function addVoters() {
+        hasVoted = false;
         if(typeof players !== 'undefined')
             players.forEach(addPlayer);
     };
@@ -173,7 +175,7 @@
         if(agent) {
             $('#main').append(voteblockhtml);
         }
-            
+
         var dead = true;
         for (let i = 0; i < players.length; i++) {
             if(players[i] == screenName) dead = false;
