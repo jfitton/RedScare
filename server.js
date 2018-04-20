@@ -268,6 +268,8 @@ function newGame(){
 }
 
 
+var numplayers = 5;
+
 // If multiple players have same name, game will not run correctly
 
 app.get('/ready', function (req, res) {
@@ -276,7 +278,7 @@ app.get('/ready', function (req, res) {
     // console.log('user[0]: ' + readyUsers[0]);
     // console.log('this games player count: ' + thisGame.players.length);
 
-    if(readyUsers.length >= 2 && readyUsers[0] == req.query.name && thisGame.players.length == 0){
+    if(readyUsers.length >= numplayers && readyUsers[0] == req.query.name && thisGame.players.length == 0){
         newGame();
 
         thisGame.id = gamId;
@@ -285,15 +287,15 @@ app.get('/ready', function (req, res) {
         thisGame.players.push(readyUsers.shift());
 
         var i;
-        for(i = 0; i < 1; i++) {
+        for(i = 0; i < numplayers-1; i++) {
             thisGame.players.push(readyUsers[i]);
         }
 
         // console.log('The next player is: ' + readyUsers[0]);
-        thisGame.cia = Math.floor(Math.random()*2);
+        thisGame.cia = Math.floor(Math.random()*numplayers);
         // console.log(thisGame.cia);
         res.json({success:'success', id:thisGame.id, players:thisGame.players, votes:thisGame.votes, cia:thisGame.cia});
-    } else if (readyUsers[0] == req.query.name && thisGame.players.length == 2 && thisGame.players.length > 0) {
+    } else if (readyUsers[0] == req.query.name && thisGame.players.length == numplayers && thisGame.players.length > 0) {
         // console.log("should send to: " + req.query.name);
         readyUsers.shift();
         res.json({success:'success', id:thisGame.id, players:thisGame.players, votes:thisGame.votes, cia:thisGame.cia, round:thisGame.round});

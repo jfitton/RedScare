@@ -47,12 +47,14 @@ label {
 .textBox {
     border: black solid 5px;
     width: 85%;
+    max-width: 85%;
     padding-top: 0px;
 }
 
 #messagingArea {
     display: block;
     width: 85%;
+    max-width: 85%;
 }
 
 .sendChat {
@@ -82,12 +84,19 @@ label {
     margin-right: 50px;
     background-color: brown;
     height: 25%;
+    max-width: 85%;
     width: 85%;
     overflow: auto;
 }
 
 h1 {
     margin: 0px;
+}
+
+.mainChat {
+    width: 33%;
+    max-width: 33%;
+
 }
 
 .readyButton {
