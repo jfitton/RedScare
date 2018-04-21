@@ -103,7 +103,8 @@ app.get('/loginUser', function (req, res) {
     valid = containsObject(combo, users); 
     if(valid) {
         console.log("login succeeded");
-        res.render('lobby.html',{name:userField});
+        // res.render('lobby.html',{name:userField});
+        res.render('gameTest.html');
     } else {
         console.log("login failed");
         res.render('login.html');
@@ -273,8 +274,19 @@ function getGame(id) {
     }
 }
 
+function makeNewGame(){
+    this.id = undefined;
+    this.players = [];
+    this.votes = [0,0,0,0,0];
+    this.cia = undefined;
+    this.round = undefined;
+    this.voted = 0;
+    this.chat = '<p>Weclome to the chat!</p>';
+    this.allVoted = false;
+}
+
 function newGame(){
-    thisGame = {id:undefined, players:[], votes:[0,0,0,0,0], cia:undefined, round:undefined, voted:0, chat:'<p>Weclome to the chat!</p>', allVoted:false};
+    thisGame = new makeNewGame();
 }
 
 
@@ -290,7 +302,7 @@ app.get('/ready', function (req, res) {
 
     if(readyUsers.length >= numplayers && readyUsers[0] == req.query.name && thisGame.players.length == 0){
         newGame();
-
+        console.log('first player')
         thisGame.id = gamId;
         gamId++;
         thisGame.round = 0;
@@ -306,13 +318,33 @@ app.get('/ready', function (req, res) {
         // console.log(thisGame.cia);
         res.json({success:'success', id:thisGame.id, players:thisGame.players, votes:thisGame.votes, cia:thisGame.cia});
     } else if (readyUsers[0] == req.query.name && thisGame.players.length == numplayers && thisGame.players.length > 0) {
+        console.log('next player')
+        console.log('READY USERS:' + readyUsers);
+        console.log('NEXT USER: ' + req.query.name);
+        console.log('CURRENT NUM PLAYERS: ' + thisGame.players.length);
         // console.log("should send to: " + req.query.name);
         readyUsers.shift();
-        res.json({success:'success', id:thisGame.id, players:thisGame.players, votes:thisGame.votes, cia:thisGame.cia, round:thisGame.round});
-        runningGames.push(thisGame);
+        res.json({
+            success: 'success',
+            id: thisGame.id,
+            players: thisGame.players,
+            votes: thisGame.votes,
+            cia: thisGame.cia,
+            round: thisGame.round
+        });
+        if (req.query.name == thisGame.players[numplayers-1]) {
+            runningGames.push(thisGame);
+            thisGame = new makeNewGame();
+
+            console.log('<----NEW GAME MADE---->')
+            console.log('READY USERS:' + readyUsers);
+            console.log('NEXT USER: ' + req.query.name);
+            console.log('CURRENT NUM PLAYERS: ' + thisGame.players.length);
+        }
         console.log('game pushed: ' + thisGame.id + runningGames.length);
     }
     else {
+        // console.log('ready failed')
         res.json({success:'fail'});
     }
 });
@@ -370,7 +402,7 @@ app.get('/vote', function (req, res) {
 });
 
 app.get('/round', function (req, res) {
-    var idNum = req.query.gameID;
+    var idNum = req.query.id;
     for (var i = 0; i < runningGames.length; i++){
         if(runningGames[i].id == idNum){
             gameById = runningGames[i];
@@ -411,16 +443,22 @@ app.get('/sendMessage', function (req, res) {
 
 app.get('/results', function (req, res) {
     // console.log('RESULTS REQUESTED');
-    var idNum = req.query.gameID;
+    var idNum = req.query.id;
     for (var i = 0; i < runningGames.length; i++){
         if(runningGames[i].id == idNum){
             gameById = runningGames[i];
             break;
         }
     }
-    console.log(gameById.voted + "::" + gameById.players.length);
+    console.log('<----LIST OF GAMES---->');
+    console.log('GAME MATCHED: ' + gameById.id + '\nID GIVEN: ' + idNum)
+    for (var i = 0; i < runningGames.length; i++) {
+        console.log(runningGames[i] + '\n')
+    }
+        console.log(gameById.voted + "::" + gameById.players.length);
     if(gameById.allVoted) {
-        console.log('shouldve sent');
+        console.log('<----SENDING RESULTS TO ' + req.query.name + '---->');
+        console.log(gameById);
         res.json({success:'success', players:gameById.players});
     }else {
         res.json({success:'fail'});

@@ -136,9 +136,10 @@
         var loopVoting = true;
         var eliminated = '';
         while(loopVoting){
+            console.log('WAITING FOR VOTES')
             //console.log('running' + temprun);
             if (temprun == false) loopVoting = false;
-            $.get('results', {id:gameID}, function (data) {
+            $.get('results', {id:gameID, name:screenName}, function (data) {
                 console.log('requesting results')
                 if(data.success == 'success') {
                     for(var i = 0; i < players.length; i++){
@@ -154,7 +155,11 @@
             });
             await sleep(1000);
         }
-        if(eliminated == screenName){
+        var dead = true;
+        for (let i = 0; i < players.length; i++) {
+            if(players[i] == screenName) dead = false;
+        }
+        if(dead){
             executed();
         }
         console.log('You and your peers have voted to execute ' + eliminated + ' on suspicion of them being a CIA agent.')
@@ -178,6 +183,8 @@
             $('#main').append(voteblockhtml);
             $('.whoSelected').remove();
 
+            console.log('GAME LOOP')
+
             // voting stage
 
             // waiting for voting stage
@@ -200,7 +207,8 @@
         }
         var loopCIAWait = true;
         while(loopCIAWait){
-            $.get('round', {gameID:gameID}, function (data) {
+            console.log('WAITING FOR CIA');
+            $.get('round', {id:gameID}, function (data) {
                 if(data.success == 'success'){
                     loopCIAWait = false;
                     players = data.players;
@@ -236,7 +244,7 @@
 
     var fin = false;
 
-    function setCIAPage() {
+    async function setCIAPage() {
         fin = false;
         if(cia) {
             console.log('this fucker is with the CIA');
@@ -245,7 +253,10 @@
         } else {
             waitForCIA(false);
         }
-        while (!fin){}
+        while (!fin){
+            await sleep(250)
+            console.log('WAITING FOR PROMISE');
+        }
         return new Promise(resolve => setTimeout(resolve, 20000));
     }
 
@@ -280,7 +291,7 @@
         while (true) {
             if (typeof gameID !== 'undefined') {
 
-                $.get("/getChat", {id: gameID}, function (data) {
+                $.get("/getChat", {id:gameID}, function (data) {
                     chatMessages = data.messages;
                 });
                 $('.chatter').html(chatMessages);
