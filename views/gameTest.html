@@ -45,6 +45,7 @@
 
     var hasVoted = false;
     var voteblockhtml = '<div class="w3-display-left voteBlock"></div>';
+    var buttonsExist = false;
 
     async function vote(player) {
         console.log('voting')
@@ -58,23 +59,25 @@
             await sleep(500);
             console.log('voted for: ' + votedFor);
             $('.voteBlock').remove();
+            buttonsExist = false;
             $('#main').append(voted);
 
             var voteNum = players.indexOf(player);
 
             $.get('/vote', {screenName: screenName, id: gameID, vote: voteNum}, function (data) {
-
+                console.log('voting ' + data.success);
             });
         }
     }
     
     function addPlayer(item, index) {
         if (item !== screenName) {
+            buttonsExist = true;
             console.log(item);
             $('.voteBlock').append('<button class="voteSelect" id="' + item + '">' + item + '</button>');
             var elem = document.getElementById(item);
             if(elem) {
-                elem.addEventListener('click', function () {
+                elem.addEventListener('click', function(){
                     vote(item);
                 });
             }
@@ -83,8 +86,11 @@
 
     function addVoters() {
         hasVoted = false;
-        if(typeof players !== 'undefined')
-            players.forEach(addPlayer);
+        // if (document.getElementById('voterBox') !== null && document.getElementById('voterBox').hasChildNodes()) {
+            if (typeof players !== 'undefined' && !buttonsExist){
+                players.forEach(addPlayer);
+            }
+        // }
     };
 
     var html = "";
@@ -97,12 +103,12 @@
         document.getElementById('screenName').textContent = 'Your Screen Name: ' + screenName;
         await sleep(150);
         $('.tempHolder').remove();
-        var loop = true;
-        while (loop) {
+        var loopReady = true;
+        while (loopReady) {
             console.log('looping');
             $.get('/ready', {name:screenName}, function (data) {
                 if(data.success == 'success'){
-                    loop = false;
+                    loopReady = false;
                     players = data.players;
                     gameID = data.id;
                     cia = (players[data.cia] == screenName);
@@ -126,12 +132,51 @@
     }
 
 
-    var running = false;
+    async function waitForVotes() {
+        var loopVoting = true;
+        var eliminated = '';
+        while(loopVoting){
+            //console.log('running' + temprun);
+            if (temprun == false) loopVoting = false;
+            $.get('results', {id:gameID}, function (data) {
+                console.log('requesting results')
+                if(data.success == 'success') {
+                    for(var i = 0; i < players.length; i++){
+                        if(players[i] !== data.players[i]) eliminated = players[i];
+                        break;
+                    }
+                    console.log('results recieved')
+                    console.log(eliminated)
+                    loopVoting = false;
+                    players = data.players;
 
-    function gameLoop() {
+                }
+            });
+            await sleep(1000);
+        }
+        if(eliminated == screenName){
+            executed();
+        }
+        console.log('You and your peers have voted to execute ' + eliminated + ' on suspicion of them being a CIA agent.')
+
+    }
+
+    var running = true;
+    var temprun = true;
+
+    async function gameLoop() {
         do {
-            setCIAPage();
+            await setCIAPage();
+            if(temprun == false) break;
             // wait for cia victim chosen response
+
+            console.log('CURRENT CIA ROUND FINISHED')
+
+            await waitForVotes()
+            if(temprun == false) break;
+
+            $('#main').append(voteblockhtml);
+            $('.whoSelected').remove();
 
             // voting stage
 
@@ -153,15 +198,15 @@
         if(!agent) {
             $('#main').append(waitingText);
         }
-        var loop = true;
-        while(loop){
+        var loopCIAWait = true;
+        while(loopCIAWait){
             $.get('round', {gameID:gameID}, function (data) {
                 if(data.success == 'success'){
-                    loop = false;
+                    loopCIAWait = false;
                     players = data.players;
-                    gameID = data.id;
-                    cia = (players[data.cia] == screenName);
-                    votes=data.votes;
+                    // gameID = data.id;
+                    // cia = (players[data.cia] == screenName);
+                    // votes=data.votes;
                 }
             });
             await sleep(250);
@@ -181,33 +226,54 @@
             if(players[i] == screenName) dead = false;
         }
         if(dead){
-            killed();
+            assassinated();
         }else {
             console.log(players);
             addVoters();
         }
+        fin = true;
     }
 
+    var fin = false;
+
     function setCIAPage() {
+        fin = false;
         if(cia) {
+            console.log('this fucker is with the CIA');
             addVoters();
             waitForCIA(true);
         } else {
             waitForCIA(false);
         }
+        while (!fin){}
+        return new Promise(resolve => setTimeout(resolve, 20000));
     }
 
-    var killedText = '<div class="w3-display-middle">' +
+    var assassinatedText = '<div class="w3-display-middle">' +
             '<h1>The CIA has assassinated you.</h1>' +
         '</div>';
 
-    function killed() {
-        console.log(killedText)
+    var executedText = '<div class="w3-display-middle">' +
+        '<h1>Your peers have executed you for fear of you being an agent of the CIA.</h1>' +
+        '</div>';
+
+    function assassinated() {
+        console.log(assassinatedText);
+        temprun = false;
         $('.voteBlock').remove();
+        buttonsExist = false;
         $('.mainChat').remove();
-        $('#main').html(killedText);
+        $('#main').html(assassinatedText);
     }
 
+
+    function executed(){
+        temprun = false;
+        $('.voteBlock').remove();
+        buttonsExist = false;
+        $('.mainChat').remove();
+        $('#main').html(executedText);
+    }
 
     var chatMessages;
     async function getChat(){

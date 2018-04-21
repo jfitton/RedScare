@@ -274,7 +274,7 @@ function getGame(id) {
 }
 
 function newGame(){
-    thisGame = {id:undefined, players:[], votes:[0,0,0,0,0], cia:undefined, round:undefined, voted:0, chat:'<p>Weclome to the chat!</p>'};
+    thisGame = {id:undefined, players:[], votes:[0,0,0,0,0], cia:undefined, round:undefined, voted:0, chat:'<p>Weclome to the chat!</p>', allVoted:false};
 }
 
 
@@ -326,23 +326,32 @@ app.get('/vote', function (req, res) {
         console.log(runningGames[i].id);
         console.log(theirID);
         if(runningGames[i].id == theirID){
-            console.log('found it')
+            // console.log('found it')
             gameById = runningGames[i];
         }
     }
     var round = gameById.round;
     if(round%2 == 0){
+        console.log("CIA ROUND")
+        gameById.voted = 0;
+        gameById.allVoted = false;
         gameById.players.splice(theirVote, 1);
+        if(theirVote < gameById.cia) gameById.cia--;
         gameById.votes.shift();
         gameById.round++;
     }else {
         console.log(gameById);
         gameById.voted++;
         gameById.votes[theirVote]++;
+        var playerCount = gameById.players.length;
         if(gameById.voted == gameById.players.length) {
+            gameById.allVoted = true;
             console.log('everyone has voted')
             for(let i = 0; i < gameById.votes.length; i++){
-                if((10*gameById.votes[i])/players.length > 5){
+                console.log(gameById.players[i] + ' has ' + gameById.votes[i] + ' votes from ' + playerCount + ' players')
+                if(((10*gameById.votes[i])/playerCount) > 5){
+                    console.log((10*gameById.votes[i])/playerCount);
+                    if(i < gameById.cia) gameById.cia--;
                     gameById.players.splice(i, 1);
                 }
             }
@@ -351,11 +360,13 @@ app.get('/vote', function (req, res) {
                 gameById.votes.push(0);
             }
             voted = [];
+
+            gameById.round++;
         }
     }
     console.log('final: ');
     console.log(gameById);
-
+    res.json({success:'success'});
 });
 
 app.get('/round', function (req, res) {
@@ -366,6 +377,8 @@ app.get('/round', function (req, res) {
             break;
         }
     }
+    gameById.voted = 0;
+    // gameById.allVoted = false;
     if(gameById.round%2 == 1) {
         res.json({
             success: 'success',
@@ -394,4 +407,22 @@ app.get('/sendMessage', function (req, res) {
     gameById.chat += '<p>' + req.query.user + ': ' + req.query.message + '</p>'
     res.json({success:'success'});
     console.log(gameById.chat)
+});
+
+app.get('/results', function (req, res) {
+    // console.log('RESULTS REQUESTED');
+    var idNum = req.query.gameID;
+    for (var i = 0; i < runningGames.length; i++){
+        if(runningGames[i].id == idNum){
+            gameById = runningGames[i];
+            break;
+        }
+    }
+    console.log(gameById.voted + "::" + gameById.players.length);
+    if(gameById.allVoted) {
+        console.log('shouldve sent');
+        res.json({success:'success', players:gameById.players});
+    }else {
+        res.json({success:'fail'});
+    }
 });
