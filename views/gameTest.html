@@ -147,25 +147,26 @@
 
     async function waitForVotes() {
         var loopVoting = true;
-        var eliminated = '';
+        // var eliminated = '';
         while(loopVoting){
-            console.log('WAITING FOR VOTES')
+            // console.log('WAITING FOR VOTES')
             //console.log('running' + temprun);
             if (temprun == false) loopVoting = false;
             $.get('results', {id:gameID, name:screenName}, function (data) {
                 console.log(data.success)
                 console.log('requesting results')
                 if(data.success == 'success') {
-                    for(var i = 0; i < players.length; i++){
-                        if(players[i] !== data.players[i]) eliminated = players[i];
-                        break;
-                    }
+                    // for(var i = 0; i < players.length; i++){
+                    //     if(players[i] !== data.players[i]) eliminated = players[i];
+                    //     break;
+                    // }
                     console.log('results recieved')
-                    console.log(eliminated)
+                    // console.log(eliminated)
                     loopVoting = false;
                     players = data.players;
 
                 } else if (data.success == 'game over'){
+                    console.log("<----GAME OVER---->")
                     if(cia) {
                         loser();
                     }else {
@@ -180,13 +181,14 @@
         for (let i = 0; i < players.length; i++) {
             if(players[i] == screenName) dead = false;
         }
-        if(players.length = 1 && cia && !dead) {
+        console.log(players)
+        if(players.length == 1 && cia && !dead) {
             winner();
         }
         if(dead){
             executed();
         }
-        console.log('You and your peers have voted to execute ' + eliminated + ' on suspicion of them being a CIA agent.')
+        // console.log('You and your peers have voted to execute ' + eliminated + ' on suspicion of them being a CIA agent.')
 
     }
 
@@ -199,7 +201,7 @@
             if(temprun == false) break;
             // wait for cia victim chosen response
 
-            console.log('CURRENT CIA ROUND FINISHED')
+            // console.log('CURRENT CIA ROUND FINISHED')
 
             await waitForVotes()
             if(temprun == false) break;
@@ -207,7 +209,7 @@
             $('#main').append(voteblockhtml);
             $('.whoSelected').remove();
 
-            console.log('GAME LOOP')
+            // console.log('GAME LOOP')
 
             // voting stage
 
@@ -231,7 +233,7 @@
         }
         var loopCIAWait = true;
         while(loopCIAWait){
-            console.log('WAITING FOR CIA');
+            // console.log('WAITING FOR CIA');
             $.get('round', {id:gameID}, function (data) {
                 if(data.success == 'success'){
                     loopCIAWait = false;
@@ -280,7 +282,7 @@
 
         while (!fin){
             await sleep(250)
-            console.log('WAITING FOR PROMISE');
+            // console.log('WAITING FOR PROMISE');
         }
         return new Promise(resolve => setTimeout(resolve, 20000));
     }
