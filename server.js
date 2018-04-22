@@ -21,7 +21,7 @@ else
 var firebase = require('firebase-admin');
 
 //gets the private key from a file for database access
-var serviceAccount = require("." + fileSlash + "red-scare-firebase-adminsdk-uj34o-a75cb5d905.json");
+var serviceAccount = require(__dirname + fileSlash + "red-scare-firebase-adminsdk-uj34o-a75cb5d905.json");
 
 //makes the inital connection
 firebase.initializeApp({
