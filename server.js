@@ -259,7 +259,7 @@ app.get('/gameStart', function (req, res) {
     res.json({html:gameStartedHTML});
 });
 
-var thisGame = {id:undefined, players:[], votes:[0,0], cia:undefined, round:undefined};
+var thisGame = {id:undefined, players:[], votes:[0,0], cia:undefined, round:undefined, gameOver:false};
 var gamId = 0;
 var runningGames = [];
 
@@ -283,6 +283,7 @@ function makeNewGame(){
     this.voted = 0;
     this.chat = '<p>Weclome to the chat!</p>';
     this.allVoted = false;
+    this.gameOver = false;
 }
 
 function newGame(){
@@ -384,6 +385,9 @@ app.get('/vote', function (req, res) {
                 if(((10*gameById.votes[i])/playerCount) > 5){
                     console.log((10*gameById.votes[i])/playerCount);
                     if(i < gameById.cia) gameById.cia--;
+                    else if(i == gameById.cia) {
+
+                    }
                     gameById.players.splice(i, 1);
                 }
             }
@@ -459,7 +463,11 @@ app.get('/results', function (req, res) {
     if(gameById.allVoted) {
         console.log('<----SENDING RESULTS TO ' + req.query.name + '---->');
         console.log(gameById);
-        res.json({success:'success', players:gameById.players});
+        if (gameById.gameOver == false) {
+            res.json({success: 'success', players: gameById.players});
+        } else {
+            res.json({success:'game over'});
+        }
     }else {
         res.json({success:'fail'});
     }

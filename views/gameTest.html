@@ -131,6 +131,13 @@
         console.log(votes);
     }
 
+    function loser(){
+        $('#main').html(game_loss_text);
+    }
+
+    function winner() {
+
+    }
 
     async function waitForVotes() {
         var loopVoting = true;
@@ -151,13 +158,23 @@
                     loopVoting = false;
                     players = data.players;
 
+                } else if (data.success == 'game over'){
+                    if(cia) {
+                        loser();
+                    }else {
+                        winner();
+                    }
                 }
             });
             await sleep(1000);
         }
+
         var dead = true;
         for (let i = 0; i < players.length; i++) {
             if(players[i] == screenName) dead = false;
+        }
+        if(players.length = 1 && cia && !dead) {
+            winner();
         }
         if(dead){
             executed();
@@ -267,6 +284,21 @@
 
     var executedText = '<div class="w3-display-middle">' +
         '<h1>Your peers have executed you for fear of you being an agent of the CIA.</h1>' +
+        '</div>';
+
+    var game_loss_text = '<div class="w3-display-middle">' +
+        '<h1>YOU LOSE</h1>' +
+        '<h3>Your identity as a member of the CIA has been uncovered and you have been executed.</h3>' +
+        '</div>';
+
+    var communist_win_text = '<div class="w3-display-middle">' +
+        '<h1>YOU WIN</h1>' +
+        '<h3>You have successfully identified the CIA agent that has been assassinating your comrades.</h3>' +
+        '</div>';
+
+    var cia_win_text = '<div class="w3-display-middle">' +
+        '<h1>YOU WIN</h1>' +
+        '<h3>You have successfully eliminated all communists in this society.</h3>' +
         '</div>';
 
     function assassinated() {
