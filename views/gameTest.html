@@ -136,7 +136,11 @@
     }
 
     function winner() {
-
+        if(cia){
+            $('#main').html(communist_win_text);
+        } else {
+            $('#main').html(cia_win_text);
+        }
     }
 
     async function waitForVotes() {

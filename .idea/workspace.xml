@@ -70,10 +70,10 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>voted = 0</find>
-      <find>gamebyid.voted ==</find>
+      <find />
+      <find />
       <find>z</find>
-      <find>allvoted =</find>
+      <find />
       <find>.voteBlock</find>
       <find>/round</find>
       <find>.html</find>
@@ -84,7 +84,7 @@
       <find>while</find>
       <find>requested</find>
       <find>games</find>
-      <find>requested by</find>
+      <find />
       <find>readyup</find>
       <find>results</find>
       <find>query.game</find>
@@ -96,7 +96,7 @@
       <find>/vot</find>
       <find>random</find>
       <find>resul</find>
-      <find>game over</find>
+      <find />
       <find>cia</find>
       <find>#main</find>
       <find>loser</find>
@@ -135,8 +135,8 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="601" />
-    <option name="y" value="194" />
+    <option name="x" value="690" />
+    <option name="y" value="-11" />
     <option name="width" value="974" />
     <option name="height" value="1047" />
   </component>
