@@ -248,8 +248,11 @@ app.get('/create', function (req, res) {
     var passField = req.query.passField;
     console.log(passField);
     //adding to users
-    ref.push({username: userField, password: passField});
-
+    //search for the username
+    ref.orderByChild("username").equalTo(userField).on("child_added", function(snapshot) {
+        //if you get here then the username is already taken
+        res.render('newUser.html');    
+    });
     //writing to file
     res.render('login.html');
 });
