@@ -1,16 +1,28 @@
 {
   "name": "redscare",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "author": "",
+  "author": "Jesse Finton, Sean Connelly",
   "license": "BSD-2-Clause",
-  "description": "",
+  "description": "Mafia-style game project for Purdue CS 252 final project",
   "dependencies": {
     "ejs": "^2.5.8",
-    "express": "^4.16.3"
-  }
+    "express": "^4.16.3",
+    "firebase": "^4.13.0",
+    "firebase-admin": "^5.12.0",
+    "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jfitton/RedScare.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jfitton/RedScare/issues"
+  },
+  "homepage": "https://github.com/jfitton/RedScare#readme"
 }
