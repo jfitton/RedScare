@@ -131,6 +131,19 @@
         console.log(votes);
     }
 
+    function loser(){
+        running = false;
+        $('#main').html(game_loss_text);
+    }
+
+    function winner() {
+        running = false;
+        if(!cia){
+            $('#main').html(communist_win_text);
+        } else {
+            $('#main').html(cia_win_text);
+        }
+    }
 
     async function waitForVotes() {
         var loopVoting = true;
@@ -140,6 +153,7 @@
             //console.log('running' + temprun);
             if (temprun == false) loopVoting = false;
             $.get('results', {id:gameID, name:screenName}, function (data) {
+                console.log(data.success)
                 console.log('requesting results')
                 if(data.success == 'success') {
                     for(var i = 0; i < players.length; i++){
@@ -151,13 +165,23 @@
                     loopVoting = false;
                     players = data.players;
 
+                } else if (data.success == 'game over'){
+                    if(cia) {
+                        loser();
+                    }else {
+                        winner();
+                    }
                 }
             });
             await sleep(1000);
         }
+
         var dead = true;
         for (let i = 0; i < players.length; i++) {
             if(players[i] == screenName) dead = false;
+        }
+        if(players.length = 1 && cia && !dead) {
+            winner();
         }
         if(dead){
             executed();
@@ -261,12 +285,27 @@
         return new Promise(resolve => setTimeout(resolve, 20000));
     }
 
-    var assassinatedText = '<div class="w3-display-middle">' +
+    var assassinatedText = '<div class="w3-display-middle box">' +
             '<h1>The CIA has assassinated you.</h1>' +
         '</div>';
 
-    var executedText = '<div class="w3-display-middle">' +
+    var executedText = '<div class="w3-display-middle box">' +
         '<h1>Your peers have executed you for fear of you being an agent of the CIA.</h1>' +
+        '</div>';
+
+    var game_loss_text = '<div class="w3-display-middle box">' +
+        '<h1>YOU LOSE</h1>' +
+        '<h3>Your identity as a member of the CIA has been uncovered and you have been executed.</h3>' +
+        '</div>';
+
+    var communist_win_text = '<div class="w3-display-middle box">' +
+        '<h1>YOU WIN</h1>' +
+        '<h3>You have successfully identified the CIA agent that has been assassinating your comrades.</h3>' +
+        '</div>';
+
+    var cia_win_text = '<div class="w3-display-middle box">' +
+        '<h1>YOU WIN</h1>' +
+        '<h3>You have successfully eliminated all communists in this society.</h3>' +
         '</div>';
 
     function assassinated() {
