@@ -7,7 +7,49 @@ var favicon = require('serve-favicon');
 //var favicon = require('serve-favicon');
 //var bodyparser = require('body-parser');
 
+//determining OS for file operations
+var fileSlash;
+if(process.platform === "win32")
+	fileSlash = "\\";
+else
+	fileSlash = "/";
 
+
+
+//firebase
+//you should install firebase-admin for this to work
+var firebase = require('firebase-admin');
+
+//gets the private key from a file for database access
+var serviceAccount = require("." + fileSlash + "red-scare-firebase-adminsdk-uj34o-a75cb5d905.json");
+
+//makes the inital connection
+firebase.initializeApp({
+  credential: firebase.credential.cert(serviceAccount),
+  databaseURL: "https://red-scare.firebaseio.com"
+});
+//connects to fileserver
+var db = firebase.database();
+//this is the same as "fopen("firedatabase/users", rw);"
+//calling this with different names lets you store things in different folders
+var ref = db.ref("users");
+
+//sets a guy with username pants to have password also pants
+
+
+//ref.push({username: "pants", password: "also pants"});
+
+
+ref.on("child_added", function(snapshot) {
+  var newUser = snapshot.val();
+  console.log("username: " + newUser.username);
+  console.log("password: " + newUser.password);
+});
+
+
+//console.log("query test");
+//not needed anymore
+/*
 // load list of users from users.db
 //TODO: when writing users to the file, do not include admin
 var users = [{username:"ADMIN", password:"yes"}]; 
@@ -26,7 +68,7 @@ lineReader.on('line', function (line) {
     users.push(user);
     
 });
-
+*/
 
 var app = express();
 var gameid = 0;
@@ -47,12 +89,6 @@ function containsObject(obj, list) { //used for verifying logins
     return false;
 }
 
-//determining OS for file operations
-var fileSlash;
-if(process.platform === "win32")
-	fileSlash = "\\";
-else
-	fileSlash = "/";
 
 
 
@@ -94,13 +130,28 @@ app.get('/players', function (req, res) {
 app.get('/loginUser', function (req, res) {
 
     //verfiy login 
-    var valid = true;
+    var valid = false;
     userField = req.query.userField;
     //console.log(userField);
     var passField = req.query.passField;
     //console.log(passField);
     var combo = {username:userField, password:passField};
-    valid = containsObject(combo, users); 
+  
+    
+    //search for the username
+    ref.orderByChild("username").equalTo(userField).on("child_added", function(snapshot) {
+
+        console.log(snapshot.key);
+        //search for the password
+    ref.orderByChild("password").equalTo(passField).on("child_added", function(snapshot2) {
+            console.log(snapshot2.key);
+            if (snapshot.key == snapshot2.key)
+                valid = true;
+        });
+
+    });
+
+
     if(valid) {
         console.log("login succeeded");
         // res.render('lobby.html',{name:userField});
@@ -109,6 +160,8 @@ app.get('/loginUser', function (req, res) {
         console.log("login failed");
         res.render('login.html');
     }
+
+
 });
 
 app.get('/getuser', function (req, res) {
@@ -195,13 +248,9 @@ app.get('/create', function (req, res) {
     var passField = req.query.passField;
     console.log(passField);
     //adding to users
-    var combo = {username:userField, password:passField};
-    users.push(combo); 
+    ref.push({username: userField, password: passField});
+
     //writing to file
-    fs.appendFile('file.db', userField + ":" + passField + "\n", function (err) {
-        if (err) throw err;
-        console.log('User added');
-    }); 
     res.render('login.html');
 });
 
