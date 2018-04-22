@@ -386,7 +386,7 @@ app.get('/vote', function (req, res) {
                     console.log((10*gameById.votes[i])/playerCount);
                     if(i < gameById.cia) gameById.cia--;
                     else if(i == gameById.cia) {
-
+                        gameById.gameOver = true;
                     }
                     gameById.players.splice(i, 1);
                 }

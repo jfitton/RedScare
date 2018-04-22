@@ -134,3 +134,9 @@ input{
     width: 45px;
     height: 45px;
 }
+
+.box{
+    border: black 5px solid;
+    background-color: brown;
+    color: goldenrod;
+}
