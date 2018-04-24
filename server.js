@@ -254,6 +254,7 @@ app.get('/create', function (req, res) {
         res.render('newUser.html');    
     });
     //writing to file
+    ref.push({username: userField, password: passField});
     res.render('login.html');
 });
 
@@ -270,7 +271,7 @@ app.get('/getChat', function (req, res) {
     res.json({messages:gameById.chat})
 })
 
-var server = app.listen(process.env.PORT, function () {
+var server = app.listen(process.env.PORT || 8081, function () {
     var host = server.address().address;
     var port = server.address().port;
 });
