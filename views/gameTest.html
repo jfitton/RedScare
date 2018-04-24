@@ -182,6 +182,7 @@
             if(players[i] == screenName) dead = false;
         }
         console.log(players)
+        console.log('<---NUM PLAYERS: '+players.length+'--->');
         if(players.length == 1 && cia && !dead) {
             winner();
         }
@@ -202,6 +203,11 @@
             // wait for cia victim chosen response
 
             // console.log('CURRENT CIA ROUND FINISHED')
+            while (!fin){
+                await sleep(250)
+                // console.log('WAITING FOR PROMISE');
+            }
+            if(players.length == 1 && cia && players[0] == screenName) winner();
 
             await waitForVotes()
             if(temprun == false) break;
@@ -280,11 +286,8 @@
             waitForCIA(false);
         }
 
-        while (!fin){
-            await sleep(250)
-            // console.log('WAITING FOR PROMISE');
-        }
-        return new Promise(resolve => setTimeout(resolve, 20000));
+
+        return new Promise(resolve => setTimeout(resolve, 2000));
     }
 
     var assassinatedText = '<div class="w3-display-middle box">' +
