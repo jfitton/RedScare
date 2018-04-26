@@ -17,33 +17,125 @@
 </head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<link rel="stylesheet" href="/styles.css">
-<style>
-    body,h1 {font-family: "Raleway", sans-serif}
-    body, html {height: 100%}
-    .bgimg {
-        background-image: url('/1.jpg');
-        min-height: 100%;
-        background-position: center;
-        background-size: cover;
-    }
-</style>
+<link rel="stylesheet" href="/style2.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--link rel="stylesheet" href="/styles.css"-->
 <body>
-<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
-    <div class="w3-display-topleft w3-padding-large w3-xlarge">
+<!-- Navbar -->
+<div class="w3-top">
+  <div class="w3-bar w3-black w3-card">
+    <a class="w3-bar-item w3-button w3-padding-large w3-hide-medium w3-hide-large w3-right" href="javascript:void(0)" onclick="myFunction()" title="Toggle Navigation Menu"><i class="fa fa-bars"></i></a>
+    <a href="/login" class="w3-bar-item w3-button w3-padding-large">LOGIN</a>
+    <a href="/newUser" class="w3-bar-item w3-button w3-padding-large w3-hide-small">CREATE USER</a>
 
+      </div>
     </div>
-    <div class="w3-display-topmiddle">
-        <h1 class="w3-animate-top title"><img class="logo" src="/hammer-sickle-logo-8BA54A789D-seeklogo.com.png"><strong>RED SCARE</strong><img class="logo" src="/hammer-sickle-logo-8BA54A789D-seeklogo.com.png"></h1>
-<!--        <hr class="w3-border-grey" style="margin:auto;width:40%"> -->
-        <div id="options">
-            <p class="w3-large w3-center"><a class="links" href="/login">Login</a></p>
-            <p class="w3-large w3-center"><a class="links" href="/newUser">Create Account</a></p>
-        </div>
-    </div>
+  </div>
 </div>
+
+
+<!-- Page content -->
+<div class="w3-content" style="max-width:2000px;margin-top:46px">
+
+  <!-- Automatic Slideshow Images -->
+  <div class="mySlides w3-display-container w3-center">
+    <img src="/2.png" style="width:100%">
+    <div class="w3-display-bottommiddle w3-container w3-text-white w3-padding-32 w3-hide-small">
+      <h3><b>RED SCARE</b></h3>
+      <p><b>Can you find the CIA agent in your midst?</b></p>   
+    </div>
+  </div>
+
+
+  <!-- The Band Section -->
+  <div class="w3-container w3-content w3-center w3-padding-64" style="max-width:800px" id="band">
+    <h2 class="w3-wide">THE GAME</h2>
+    <p class="w3-opacity"><i>how to play</i></p>
+    <p>This game is very similar to a common table game, "<a href="https://en.wikipedia.org/wiki/Mafia_%28party_game%29">mafia</a>". From it's wikipedia: </p>
+    <p><i>In its simplest form, Mafia is played by two teams: the mafia and the innocents. </i></p>
+<p>
+There are two phases: night and day. At night, certain players secretly perform special actions; during day, players discuss and vote to "lynch," or eliminate, one player. These phases alternate with each other until all mafiosi have been eliminated or until the mafia outnumbers the innocents.
+</p>
+<p>
+
+
+
+The players of this game, in particular, have the following two roles that are randomly assigned:
+</p>
+
+<p>
+    <b>Regular communist — </b>an innocent who must learn who the CIA agent is by who is acting wierd in the chat,
+    and by any other means nessesary
+</p>
+<p>
+    <b>CIA agent — </b>A "bad guy" who, every night, has time to assasinate one player of their choosing.
+	to play this role, blend in with the communists during the daytime and have them lynch the players
+that will most likely catch you. Don't forget to only refer to yourself as 'we' to blend in :P
+</p>
+
+<p><b> Creators:</b></p>
+	<div class="w3-row w3-padding-32">
+      <div class="w3-half">
+        <p>Jesse Finton</p>
+        <img src="/jesse.png" class="w3-round w3-margin-bottom" alt="<jesse's icon>" style="width:60%">
+      </div>
+      <div class="w3-half">
+        <p>Sean Connelly</p>
+        <img src="/sean.png" class="w3-round w3-margin-bottom" alt="<sean's icon>" style="width:60%">
+      </div>
+    </div>
+  </div>
+
+  
+
+
+  
+<!-- End Page Content -->
+</div>
+
+<footer class="w3-container w3-padding-64 w3-center w3-opacity w3-light-grey w3-xlarge">
+  <a target="_blank" href="https://github.com/jfitton/RedScare"><i class="fa fa-github w3-hover-opacity"></i></a>
+  <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a>,
+   <a href="https://nodejs.org/en/about/">node.js</a>, and <a href="https://expressjs.com/">express</a></p>
+</footer>
+
+<script>
+// Automatic Slideshow - change image every 4 seconds
+var myIndex = 0;
+carousel();
+
+function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";  
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}    
+    x[myIndex-1].style.display = "block";  
+    setTimeout(carousel, 4000);    
+}
+
+// Used to toggle the menu on small screens when clicking on the menu button
+function myFunction() {
+    var x = document.getElementById("navDemo");
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+    } else { 
+        x.className = x.className.replace(" w3-show", "");
+    }
+}
+
+// When the user clicks anywhere outside of the modal, close it
+var modal = document.getElementById('ticketModal');
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
 <!-- <button>click</button> -->
 </body>
 </html>
