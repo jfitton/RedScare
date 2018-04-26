@@ -249,13 +249,21 @@ app.get('/create', function (req, res) {
     console.log(passField);
     //adding to users
     //search for the username
+    var newUser = true;
     ref.orderByChild("username").equalTo(userField).on("child_added", function(snapshot) {
         //if you get here then the username is already taken
-        res.render('newUser.html');    
+        newUser = false;  
     });
     //writing to file
-    ref.push({username: userField, password: passField});
-    res.render('login.html');
+    if(newUser)
+    {
+        ref.push({username: userField, password: passField});
+        res.render('login.html');
+    }
+    else
+    {
+        res.render('newUser.html'); 
+    }
 });
 
 app.get('/getChat', function (req, res) {
