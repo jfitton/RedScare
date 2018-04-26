@@ -307,28 +307,51 @@
         return new Promise(resolve => setTimeout(resolve, 2000));
     }
 
-    var assassinatedText = '<div class="w3-display-middle box">' +
-            '<h1>The CIA has assassinated you.</h1>' +
-        '</div>';
+    var assassinatedText = '<div class="w3-display-middle box"><div class="w3-display-middle">' +
+            '<h1>The CIA has assassinated you.</h1></div>' +
+        '<div class="w3-display-bottommiddle playAgain">' +
+        '<h4>Play Again?</h4>' +
+        '<button onclick="refresh()">Yes</button>' + '<button onclick="done()">no</button>' +
+        '</div></div>';
 
-    var executedText = '<div class="w3-display-middle box">' +
-        '<h1>Your peers have executed you for fear of you being an agent of the CIA.</h1>' +
-        '</div>';
+    var executedText = '<div class="w3-display-middle box"><div class="w3-display-middle">' +
+        '<h1>Your peers have executed you for fear of you being an agent of the CIA.</h1></div>' +
+        '<div class="w3-display-bottommiddle playAgain">' +
+        '<h4>Play Again?</h4>' +
+        '<button onclick="refresh()">Yes</button>' + '<button onclick="done()">no</button>' +
+        '</div></div>';
 
-    var game_loss_text = '<div class="w3-display-middle box">' +
+    var game_loss_text = '<div class="w3-display-middle box"><div class="w3-display-middle">' +
         '<h1>YOU LOSE</h1>' +
-        '<h3>Your identity as a member of the CIA has been uncovered and you have been executed.</h3>' +
-        '</div>';
+        '<h3>Your identity as a member of the CIA has been uncovered and you have been executed.</h3></div>' +
+        '<div class="w3-display-bottommiddle playAgain">' +
+        '<h4>Play Again?</h4>' +
+        '<button onclick="refresh()">Yes</button>' + '<button onclick="done()">no</button>' +
+        '</div></div>';
 
-    var communist_win_text = '<div class="w3-display-middle box">' +
+    var communist_win_text = '<div class="w3-display-middle box"><div class="w3-display-middle">' +
         '<h1>YOU WIN</h1>' +
-        '<h3>You have successfully identified the CIA agent that has been assassinating your comrades.</h3>' +
-        '</div>';
+        '<h3>You have successfully identified the CIA agent that has been assassinating your comrades.</h3></div>' +
+        '<div class="w3-display-bottommiddle playAgain">' +
+        '<h4>Play Again?</h4>' +
+        '<button onclick="refresh()">Yes</button>' + '<button onclick="done()">no</button>' +
+        '</div></div>';
 
-    var cia_win_text = '<div class="w3-display-middle box">' +
+    var cia_win_text = '<div class="w3-display-middle box"><div class="w3-display-middle">' +
         '<h1>YOU WIN</h1>' +
-        '<h3>You have successfully eliminated all communists in this society.</h3>' +
-        '</div>';
+        '<h3>You have successfully eliminated all communists in this society.</h3></div>' +
+        '<div class="w3-display-bottommiddle playAgain">' +
+        '<h4>Play Again?</h4>' +
+        '<button onclick="refresh()">Yes</button>' + '<button onclick="done()">no</button>' +
+        '</div></div>';
+
+    function refresh() {
+        location.reload();
+    }
+
+    function done() {
+        location.replace('/')
+    }
 
     function assassinated() {
         console.log(assassinatedText);
