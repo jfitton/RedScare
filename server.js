@@ -337,6 +337,7 @@ function makeNewGame(){
     this.chat = '<p>Weclome to the chat!</p>';
     this.allVoted = false;
     this.gameOver = false;
+    this.timeLastVote = 0;
 }
 
 function newGame(){
@@ -455,6 +456,8 @@ app.get('/vote', function (req, res) {
     }
     console.log('final: ');
     console.log(gameById);
+    let seconds = Math.floor(new Date().getTime() / 1000);
+    gameById.timeLastVote = seconds;
     res.json({success:'success'});
 });
 
@@ -524,6 +527,11 @@ app.get('/results', function (req, res) {
             res.json({success:'game over'});
         }
     }else {
-        res.json({success:'fail'});
+        let seconds = Math.floor(new Date().getTime() / 1000);
+        if((seconds - gameById.timeLastVote) > 60){
+            res.json({success:'timedOut'});
+        }else {
+            res.json({success:'fail'});
+        }
     }
 });

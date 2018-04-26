@@ -145,6 +145,11 @@
         }
     }
 
+    function leaver() {
+        running = false;
+        $('#main').html(someone_left);
+    }
+
     async function waitForVotes() {
         var loopVoting = true;
         // var eliminated = '';
@@ -173,6 +178,10 @@
                     }else {
                         winner();
                     }
+                } else if(data.success == 'timedOut') {
+                    console.log('Recieved Someone Left');
+                    running = false;
+                    leaver();
                 }
             });
             await sleep(1000);
@@ -340,6 +349,13 @@
     var cia_win_text = '<div class="w3-display-middle box"><div class="w3-display-middle">' +
         '<h1>YOU WIN</h1>' +
         '<h3>You have successfully eliminated all communists in this society.</h3></div>' +
+        '<div class="w3-display-bottommiddle playAgain">' +
+        '<h4>Play Again?</h4>' +
+        '<button onclick="refresh()">Yes</button>' + '<button onclick="done()">no</button>' +
+        '</div></div>';
+
+    var someone_left = '<div class="w3-display-middle box"><div class="w3-display-middle">' +
+        '<h3>It seems that someone has either left or disconnected from your game.</h3></div>' +
         '<div class="w3-display-bottommiddle playAgain">' +
         '<h4>Play Again?</h4>' +
         '<button onclick="refresh()">Yes</button>' + '<button onclick="done()">no</button>' +
