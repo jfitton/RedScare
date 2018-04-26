@@ -166,7 +166,8 @@
                     players = data.players;
 
                 } else if (data.success == 'game over'){
-                    console.log("<----GAME OVER---->")
+                    console.log("<----GAME OVER---->");
+                    running = false;
                     if(cia) {
                         loser();
                     }else {
@@ -187,7 +188,9 @@
             winner();
         }
         if(dead){
+            if(running == false) return;
             executed();
+            running = false;
         }
         // console.log('You and your peers have voted to execute ' + eliminated + ' on suspicion of them being a CIA agent.')
 
@@ -203,6 +206,7 @@
             // wait for cia victim chosen response
 
             // console.log('CURRENT CIA ROUND FINISHED')
+            if(running == false) break;
             while (!fin){
                 await sleep(250)
                 // console.log('WAITING FOR PROMISE');
@@ -214,7 +218,7 @@
 
             $('#main').append(voteblockhtml);
             $('.whoSelected').remove();
-
+            if(running == false) break;
             // console.log('GAME LOOP')
 
             // voting stage
@@ -239,9 +243,13 @@
         }
         var loopCIAWait = true;
         while(loopCIAWait){
+            var roundSucc = true;
             // console.log('WAITING FOR CIA');
-            $.get('round', {id:gameID}, function (data) {
-                if(data.success == 'success'){
+            console.log(players);
+            $.get('round', {id:gameID, name:screenName}, function (data) {
+                if(data.players.length < players.length - 1)
+                    roundSucc = false;
+                if(data.success == 'success' && roundSucc !== false){
                     loopCIAWait = false;
                     players = data.players;
                     // gameID = data.id;
@@ -263,9 +271,18 @@
 
         var dead = true;
         for (let i = 0; i < players.length; i++) {
-            if(players[i] == screenName) dead = false;
+            if(players[i] == screenName) {
+                dead = false;
+            }
         }
         if(dead){
+            console.log(players);
+            for (let i = 0; i < players.length; i++) {
+                console.log(players[i] + "::" + (screenName == players[i]))
+            }
+            console.log("<---RECIEVED AS DEAD--->")
+            if(running == false) return;
+            running = false;
             assassinated();
         }else {
             console.log(players);

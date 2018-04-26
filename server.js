@@ -327,7 +327,7 @@ function getGame(id) {
 }
 
 function makeNewGame(){
-    this.id = undefined;
+    this.id = gamId;
     this.players = [];
     this.votes = [0,0,0,0,0];
     this.cia = undefined;
@@ -459,12 +459,14 @@ app.get('/vote', function (req, res) {
 
 app.get('/round', function (req, res) {
     var idNum = req.query.id;
+    console.log("<---ROUND REQUESTED FOR GAME " + req.query.id + " BY " + req.query.name + "--->")
     for (var i = 0; i < runningGames.length; i++){
         if(runningGames[i].id == idNum){
             gameById = runningGames[i];
             break;
         }
     }
+    console.log(gameById.players);
     gameById.voted = 0;
     // gameById.allVoted = false;
     if(gameById.round%2 == 1) {
